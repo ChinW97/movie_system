@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.js">
+</head>
+<body>
+    <div id="wrapper" class="signup-page" method="POST" action="/signup" style="width:100%;text-align:left">
+        <div id="signup_form" class="form" style="width:20%;margin:0 auto;text-align:left">
+        <!--<form class="register-form">
+        <input type="text" placeholder="用户名" value="admin" name="username" />
+        <input type="password" placeholder="密码" name="password" />
+        <input type="text" placeholder="电子邮件" id="r_emial" />
+        <button id="create">创建账户</button>
+        <p class="message">已经有了一个账户? <a href="#">立刻登录</a></p>
+        </form>-->
+        <form class="signup-form" method="POST" action="/signup">
+        <h2>signup</h2>
+        <input type="text" placeholder="username" name="username" required="required" size="40"/>
+        <br>
+        <input type="text" placeholder="firstname" name="firstname" required="required" size="40"/>
+        <br>
+        <input type="text" placeholder="lastname" name="lastname" required="required" size="40"/>
+        <br>
+        <input type="email" placeholder="email" name="email" required="required" size="40"/>
+        <br>
+        <input type="password" placeholder="password" name="password" required="required" size="40"/>
+        <br>
+        <br>
+        <input type="submit" name = "signup" value="signup" class="btn btn-primary">   {{msg}}
+        <p class="message">Already had a account? <a href="/login">login</a></p>
+        <!-- <p class="message">还没有账户? <a href="signup.html">立刻创建</a></p> -->
+        </form>
+        </div>
+        </div>
+
+    </div>
+</body>
+</html>
