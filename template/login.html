@@ -10,13 +10,6 @@
 <body>
     <div id="wrapper" class="login-page" method="POST" style="width:100%;text-align:left" action="/login">
         <div id="login_form" class="form" style="width:20%;margin:0 auto;text-align:left">
-        <!--<form class="register-form">
-        <input type="text" placeholder="用户名" value="admin" name="username" />
-        <input type="password" placeholder="密码" name="password" />
-        <input type="text" placeholder="电子邮件" id="r_emial" />
-        <button id="create">创建账户</button>
-        <p class="message">已经有了一个账户? <a href="#">立刻登录</a></p>
-        </form>-->
         <form class="login-form" method="POST" action="/login/">
         <h2>login</h2>
         <input type="text" placeholder="username" name="username" required="required" size="40" />
@@ -31,7 +24,7 @@
         <br>
         <br>
         <input type="submit" name = "login" value="login" class="btn btn-primary">   {{msg}}
-        <p class="message">No account yet? <a href="/signup">signup</a></p>
+        <p class="message">No account yet? <a href="/signup/">signup</a></p>
         </form>
         </div>
         </div>

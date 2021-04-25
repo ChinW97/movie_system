@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.js">
+    <title>movie</title>
+    <style type="text/css">
+      .like{ font: size 10px;  color:#ccc; cursor:pointer;}
+      .cs{color:#f00;}
+      </style>
+
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/movie/">movie</a>
+          </div>
+      
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <form class="navbar-form navbar-left" method ="POST" action="/search/">
+              <div class="form-group">
+                <input type="text" class="form-control" name="info" placeholder="Search">
+              </div>
+              <button type="submit" class="btn btn-default">search</button>
+            </form>
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+      </nav>
+      <!-- <div class="container-fluid">
+        <ul class="list-group">
+            <li class="list-group-item">movie_id: {{result.movie_id}}</li>
+            <li class="list-group-item">primaryTitle: {{result.primaryTitle}}</li>
+            <li class="list-group-item">originalTitle: {{result.originalTitle}}</li>
+            <li class="list-group-item">runtimeMinutes: {{result.runtimeMinutes}}</li>
+            <li class="list-group-item">isAdult: {{result.isAdult}}</li>
+            <li class="list-group-item">releaseYear: {{result.releaseYear}}</li>
+            <li class="list-group-item">averageRating: {{result.averageRating}}</li>
+            <li class="list-group-item">name: {{result.name}}</li>
+            <li class="list-group-item">language: {{result.language}}</li>
+            <li class="list-group-item">region: {{result.region}}</li>
+            <li class="list-group-item">crew: {{result.crew}}</li>
+          </ul>
+  </div> -->
+  <div class="container">
+  <div class="panel panel-info">
+    <div class="panel-heading">movie_id</div>
+    <div class="panel-body">
+        {{result.movie_id}}
+    </div>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">
+        primaryTitle
+    </div>
+    <div class="panel-body">
+        {{result.primaryTitle}}
+    </div>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">originalTitle</div>
+    <div class="panel-body">
+        {{result.originalTitle}}
+    </div>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">runtimeMinutes</div>
+    <div class="panel-body">
+        {{result.runtimeMinutes}}
+    </div>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">isAdult</div>
+    <div class="panel-body">
+        {{result.isAdult}}
+    </div>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">releaseYear</div>
+    <div class="panel-body">
+        {{result.releaseYear}}
+    </div>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">averageRating</div>
+    <div class="panel-body">
+        {{result.averageRating}}
+    </div>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">name</div>
+    <div class="panel-body">
+        {{result.name}}
+    </div>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">language</div>
+    <div class="panel-body">
+        {{result.language}}
+    </div>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">region</div>
+    <div class="panel-body">
+        {{result.region}}
+    </div>
+  </div>
+  <div class="panel panel-info">
+    <div class="panel-heading">crew</div>
+    <div class="panel-body">
+        {{result.crew}}
+    </div>
+  </div>
+</div>
+
+  <script typet="text/javascript" src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+        $(function () {            
+            $(".like").click(function () {
+                $(this).toggleClass('cs');                
+            })
+        })
+    </script>
+</body>
+</html>

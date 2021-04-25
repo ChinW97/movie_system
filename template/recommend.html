@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.js">
+    <!-- <script type="text/javascript" src="static/jquery-3.4.1.js"></script>
+    <script type="text/javascript" src="static/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="static/jquery.min.js"></script>
+    <script type="text/javascript" src="static/tableExport.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.js"></script>
+    <script type="text/javascript" src="static/jquery.base64.js"></script> -->
+    <script type="text/javascript" src="/static/jquery.min.js"></script>
+    <!-- <script type="text/javascript" src="/static/tableExport.js"></script> -->
+    <!-- <script type="text/javascript" src="/static/jquery.base64.js"></script> -->
+    <script type="text/javascript" src="/static/jquery.table2excel.js"></script>
+    <script type="text/javascript" src="/static/jquery.table2excel.min.js"></script>
+    <title>movie</title>
+
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/movie?userId={{user_id}}">movie</a>
+          </div>
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <!-- <form class="navbar-form navbar-left" method ="POST" action="/search/">
+              <div class="form-group">
+                <input type="text" class="form-control" name="info" placeholder="Search">
+              </div>
+              <button type="submit" class="btn btn-default">search</button>
+            </form> -->
+            <ul class="nav navbar-nav navbar-right">
+              <input type="submit" value="export" style="line-height:20px" class="btn btn-primary btn-lg" onclick="table('recommendation.xls')"/>
+            </ul>
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+      </nav>
+      <div class="page-header">
+        <h1>My watchlist<small></small></h1>
+      </div>
+    <table class="table" id="result" >
+        <thead>
+            <tr>
+                <th>number</th>
+                <th>movie_id</th>
+                <th>primaryTitle</th>
+                <th>originalTitle</th>
+                <th>averageRating</th>
+                <!-- <th>MyRating</th> -->
+            </tr>
+            {% for i in result%}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{i.movie_id}}</td>
+                <td>{{i.primaryTitle}}</td>
+                <td>{{i.originalTitle}}</td>
+                <td>{{i.averageRating}}</td>
+                <!-- <td>{{i.myRating}}</td>
+                <td>
+                    <a href="/myrating?nid={{i.movie_id}}">rate it!</a>
+                </td>            -->
+                </tr>
+            {%endfor%}
+            
+        </thead>
+    </table>
+    <p>{{message}}</p>
+    <script>
+    //   $("#btn_export").click(function () {
+    //     $('#recommendation').tableExport({ type: 'csv', escape: 'false'});
+    // });
+    function table(filename){
+      $('#result').table2excel(
+        {exclude: ".noExl",
+           name: "Excel Document Name",
+           filename: filename,
+           fileext: ".xls",
+           exclude_img: true,
+           exclude_links: true,
+           exclude_inputs: true
+        });
+    }
+
+</script>
+</body>
+</html>
