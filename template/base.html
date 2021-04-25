@@ -4,11 +4,77 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="static/bootstrap-3.3.7-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="static/bootstrap-3.3.7-dist/css/bootstrap.min.js">
-    {% block head%} {% endblock %} 
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.js">
+    <title>Document</title>
+    <style type="text/css">
+      .like{ font: size 10px;  color:#ccc; cursor:pointer;}
+      .cs{color:#f00;}
+      </style>
+
 </head>
 <body>
-    {% block body%} {% endblock %}  
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/movie/">movie</a>
+          </div>
+      
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="/recommend">my watchlist</a></li>
+            </ul>
+            
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+      </nav>
+      <div class="page-header">
+        <h1>Recommendation for you<small></small></h1>
+      </div>
+      <div class="container-fluid">
+    <table class="table table-condensed">
+        <thead>
+            <tr>
+                <th>number</th>
+                <th>movie_id</th>
+                <th>primaryTitle</th>
+                <th>originalTitle</th>
+                <th>runtimeMinutes</th>
+                <th>isAdult</th>
+                <th>releaseYear</th>
+                <th>averageRating</th>
+            </tr>
+            {% for i in result%}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{i.movie_id}}</td>
+                <td>{{i.primaryTitle}}</td>
+                <td>{{i.originalTitle}}</td>
+                <td>{{i.runtimeMinutes}}</td>
+                <td>{{i.isAdult}}</td>
+                <td>{{i.releaseYear}}</td>
+                <td>{{i.averageRating}}</td>          
+                </tr>
+            {%endfor%}
+            
+        </thead>
+    </table>
+  </div>
+  <script typet="text/javascript" src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+        $(function () {            
+            $(".like").click(function () {
+                $(this).toggleClass('cs');                
+            })
+        })
+    </script>
 </body>
 </html>

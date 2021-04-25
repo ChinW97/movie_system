@@ -20,14 +20,23 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Brand</a>
+            <a class="navbar-brand" href="/movie_manage/">movie</a>
           </div>
       
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-              <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-              <li><a href="#">Link</a></li>
+              <li class="active"><a href="/user_manage/">user managment<span class="sr-only">(current)</span></a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="/login">logout</a></li>
+            </ul>
+            <form class="navbar-form navbar-right" method ="POST" action="/search_movie/">
+              <div class="form-group">
+                <input type="text" class="form-control" name="info" placeholder="Search">
+              </div>
+              <button type="submit" class="btn btn-default">search</button>
+            </form>
           </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
       </nav>
@@ -54,7 +63,14 @@
                 <td>{{result.isAdult}}</td>
                 <td>{{result.releaseYear}}</td>
                 <td>{{result.averageRating}}</td>
-                <td>{{result.name}}</td>         
+                <td>{{result.name}}</td>
+                <td>
+                    <a href="/del_movie/?nid={{result.movie_id}}">delete</a>
+                    |
+                    <a href="/edit_movie?nid={{result.movie_id}}">edit</a>
+                    
+                </td>  
+           
                 </tr>
             {%endfor%}
             

@@ -90,6 +90,12 @@ class Movie(models.Model):
         # managed = False
         db_table = 'movie'
 
+class Recommend(models.Model):
+    movie_id = models.AutoField(primary_key=True)
+    primarytitle = models.CharField(max_length=100)  # Field name made lowercase.
+    originaltitle = models.CharField(max_length=100)  # Field name made lowercase.
+    averagerating = models.IntegerField()  # Field name made lowercase.
+
 
 class MovieCategory(models.Model):
     movie = models.OneToOneField(Movie, models.DO_NOTHING, primary_key=True)

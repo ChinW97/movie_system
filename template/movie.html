@@ -6,7 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.js">
-    <title>Document</title>
+    <title>movie</title>
+    <style type="text/css">
+      .like{ font: size 10px;  color:#ccc; cursor:pointer;}
+      .cs{color:#f00;}
+      </style>
 
 </head>
 <body>
@@ -25,22 +29,6 @@
       
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-              <li class="active"><a href="#">{{user.userId}}<span class="sr-only">(current)</span></a></li>
-              <li><a href="#">Link</a></li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{username}}<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="#">Separated link</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="#">One more separated link</a></li>
-                </ul>
-              </li>
-            </ul>
             <form class="navbar-form navbar-left" method ="POST" action="/search/">
               <div class="form-group">
                 <input type="text" class="form-control" name="info" placeholder="Search">
@@ -48,22 +36,19 @@
               <button type="submit" class="btn btn-default">search</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
-              <li><a href="#">Link</a></li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="#">Separated link</a></li>
-                </ul>
-              </li>
+              <li><a href="/login">logout</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="/recommend">my watchlist</a></li>
             </ul>
           </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
       </nav>
-    <table class="table" >
+      <div class="page-header">
+        <h1>MOVIE SHOW<small>Find what you like</small></h1>
+      </div>
+      <div class="container-fluid">
+    <table class="table table-condensed">
         <thead>
             <tr>
                 <th>number</th>
@@ -74,26 +59,34 @@
                 <th>isAdult</th>
                 <th>releaseYear</th>
                 <th>averageRating</th>
-                <th>region</th>
             </tr>
             {% for result in movie_list%}
             <tr>
                 <td>{{forloop.counter}}</td>
-                <td>{{result.movie_id}}</td>
-                <td>{{result.primaryTitle}}</td>
-                <td>{{result.originalTitle}}</td>
-                <td>{{result.runtimeMinutes}}</td>
-                <td>{{result.isAdult}}</td>
-                <td>{{result.releaseYear}}</td>
-                <td>{{result.averageRating}}</td>
-                <td>{{result.name}}</td>
+                <td class="success">{{result.movie_id}}</td>
+                <td class="warning">{{result.primaryTitle}}</td>
+                <td class="danger">{{result.originalTitle}}</td>
+                <td class="info">{{result.runtimeMinutes}}</td>
+                <td class="active">{{result.isAdult}}</td>
+                <td class="success">{{result.releaseYear}}</td>
+                <td class="warning">{{result.averageRating}}</td>
                 <td>
-                    <a href="">like it!</a>
+                    <a href="/movie?nid={{result.movie_id}}"><p class="like">&#10084;</p></a>
+                    <a href="/movie_detail?nid={{result.movie_id}}"><p class="like">details</p></a>
                 </td>           
                 </tr>
             {%endfor%}
             
         </thead>
     </table>
+  </div>
+  <script typet="text/javascript" src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+        $(function () {            
+            $(".like").click(function () {
+                $(this).toggleClass('cs');                
+            })
+        })
+    </script>
 </body>
 </html>
