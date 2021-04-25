@@ -31,7 +31,7 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/movie/">movie</a>
+            <a class="navbar-brand" href="/movie?userId={{user_id}}">movie</a>
           </div>
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -43,9 +43,6 @@
             </form> -->
             <ul class="nav navbar-nav navbar-right">
               <input type="submit" value="export" style="line-height:20px" class="btn btn-primary btn-lg" onclick="table('recommendation.xls')"/>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-              <a class="btn btn-warning" style="line-height:30px" href="/base" role="button">Generate my recommendation list!</a>
             </ul>
           </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
@@ -61,7 +58,7 @@
                 <th>primaryTitle</th>
                 <th>originalTitle</th>
                 <th>averageRating</th>
-                <th>My Rating</th>
+                <!-- <th>MyRating</th> -->
             </tr>
             {% for i in result%}
             <tr>
@@ -70,17 +67,16 @@
                 <td>{{i.primaryTitle}}</td>
                 <td>{{i.originalTitle}}</td>
                 <td>{{i.averageRating}}</td>
-                <td>{{i.myRating}}</td>
-                <td class="noExl">
+                <!-- <td>{{i.myRating}}</td>
+                <td>
                     <a href="/myrating?nid={{i.movie_id}}">rate it!</a>
-                    |
-                    <a href="/del_recommend/?nid={{i.movie_id}}">remove it</a>
-                </td>           
+                </td>            -->
                 </tr>
             {%endfor%}
             
         </thead>
     </table>
+    <p>{{message}}</p>
     <script>
     //   $("#btn_export").click(function () {
     //     $('#recommendation').tableExport({ type: 'csv', escape: 'false'});

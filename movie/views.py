@@ -7,6 +7,7 @@ import rpy2.robjects.packages as rpackages
 from rpy2.robjects.vectors import StrVector
 import datetime
 import pymysql
+import csv
 import time
 import pytz
 import logging
@@ -17,6 +18,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password, check_password
 # from django.contrib.auth.models import User
 from .models import Category, Character, Comment, Crew, CrewCharacter,CrewProfession,Language, Movie, MovieCategory, MovieCrew, MovieLanguage, MovieRegion, Password, Profession, Region, Role, User, UserRole, Recommend
+from django.core import serializers
+import os
 # Create your views here.
 # Create your views here.
 
@@ -49,7 +52,8 @@ def login(request):
                 if role == "admin":
                     return redirect('/movie_manage')
                 else:
-                    return redirect('/movie')
+                    path = '/movie?userId={}'.format(username)
+                    return redirect(path)
             else:
                 return render(request, 'login.html')
         else:
@@ -98,6 +102,8 @@ def signup(request):
 
 
 def movie(request):
+
+    userId = request.GET.get('userId')
     conn = pymysql.connect(host='134.209.169.96',
                            port=3306,
                            user='MovieSystem',
@@ -106,40 +112,95 @@ def movie(request):
     cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
     cursor.execute("select * from movie limit 0,200")
     movie_list = cursor.fetchall()
-    cursor.close()
     conn.commit()
+
+    cursor.execute("select movieId from likelist where userId=%s", (userId))
+    likelist = cursor.fetchall()
+    likelist = [int(i['movieId']) for i in likelist]
+
+    cursor.close()
     conn.close()
-    nid = request.GET.get('nid')
-    if nid:
+    # nid = request.GET.get('nid')
+    # if nid:
+    #     conn = pymysql.connect( host='134.209.169.96',
+    #                             port=3306,
+    #                             user='MovieSystem',
+    #                             passwd='M0vie$ystem123',
+    #                             db='movie_system')
+    #     cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
+    #     cursor.execute("select movie_id,primaryTitle,originalTitle,averageRating from movie where movie_id =%s;",[
+    #         nid,
+    #     ])
+    #     a = cursor.fetchone()
+    #     print(a)
+
+    #     # movie_list = Movie.objects.get(movie_id=int(nid))
+    #     try:
+    #         cursor.execute("insert into recommend values(%s,%s,%s,%s,0);" ,(
+    #             a['movie_id'],
+    #             a['primaryTitle'],
+    #             a['originalTitle'],
+    #             a['averageRating'],
+    #         ))
+    #         conn.commit()
+    #     except:
+    #         pass
+    #     cursor.close()
+    #     conn.close()
+    return render(request, 'movie.html', {
+        'movie_list': movie_list,
+        'show': 1,
+        'like_list': likelist,
+        'user_id': userId
+    })
+
+def movie_like(request):
+    msg = "failed"
+    if request.method == "POST":
+        id = request.POST.get('movieId')
+        userId = request.POST.get("userId")
         conn = pymysql.connect( host='134.209.169.96',
                                 port=3306,
                                 user='MovieSystem',
                                 passwd='M0vie$ystem123',
                                 db='movie_system')
         cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
-        cursor.execute("select movie_id,primaryTitle,originalTitle,averageRating from movie where movie_id =%s;",[
-            nid,
-        ])
-        a = cursor.fetchone()
-        print(a)
-
-        # movie_list = Movie.objects.get(movie_id=int(nid))
         try:
-            cursor.execute("insert into recommend values(%s,%s,%s,%s,0);" ,(
-                a['movie_id'],
-                a['primaryTitle'],
-                a['originalTitle'],
-                a['averageRating'],
-            ))
+
+            cursor.execute("insert into likelist values(%s,%s,%s);" ,(userId, id, 10))
             conn.commit()
         except:
             pass
+
         cursor.close()
         conn.close()
-    return render(request, 'movie.html', {
-        'movie_list': movie_list,
-        'show': 1
-    })
+        msg = "success"
+
+    return HttpResponse(msg)
+
+def movie_unlike(request):
+    msg = "failed"
+    if request.method == "POST":
+        id = request.POST.get('movieId')
+        userId = request.POST.get("userId")
+        conn = pymysql.connect( host='134.209.169.96',
+                                port=3306,
+                                user='MovieSystem',
+                                passwd='M0vie$ystem123',
+                                db='movie_system')
+        cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
+        try:
+            cursor.execute("delete from likelist where userId = %s and movieId = %s", (userId, id))
+            conn.commit()
+        except:
+            pass
+        
+        cursor.close()
+        conn.close()
+        msg = "success"
+
+    
+    return HttpResponse(msg)
 
 def movie_detail(request):
     nid = request.GET.get('nid')
@@ -153,7 +214,6 @@ def movie_detail(request):
         nid,
     ])
     result = cursor.fetchone()
-    print(result)
     cursor.close()
     conn.close()
     return render(request, 'movie_detail.html', {'result': result})
@@ -178,7 +238,6 @@ def movie_manage(request):
 def search(request):
     if request.method == "POST":
         info = request.POST.get('info')
-        print(info)
         conn = pymysql.connect(host='134.209.169.96',
                             port=3306,
                             user='MovieSystem',
@@ -206,7 +265,6 @@ def search(request):
 def search_movie(request):
     if request.method == "POST":
         info = request.POST.get('info')
-        print(info)
         conn = pymysql.connect(host='134.209.169.96',
                             port=3306,
                             user='MovieSystem',
@@ -245,7 +303,6 @@ def edit_movie(request):
             nid,
         ])
         result = cursor.fetchone()
-        print(result)
         cursor.close()
         conn.close()
         return render(request, 'edit_movie.html', {'result': result})
@@ -253,8 +310,10 @@ def edit_movie(request):
         nid = request.POST.get('nid')
         primaryTitle = request.POST.get('primaryTitle')
         originalTitle = request.POST.get('originalTitle')
-        print(nid)
-        print(originalTitle)
+        runtimeMinutes = request.POST.get('runtimeMinutes')
+        isAdult = request.POST.get('isAdult')
+        releaseYear = request.POST.get('releaseYear')
+        averageRating = request.POST.get('averageRating')
         conn = pymysql.connect(host='134.209.169.96',
                                 port=3306,
                                 user='MovieSystem',
@@ -262,10 +321,14 @@ def edit_movie(request):
                                 db='movie_system')
         cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
         cursor.execute(
-            "update movie set primaryTitle=%s,originalTitle=%s where movie_id=%s", 
+            "update movie set primaryTitle=%s,originalTitle=%s, runtimeMinutes=%s, isAdult=%s, releaseYear=%s, averageRating=%s where movie_id=%s", 
             [
                 primaryTitle,
                 originalTitle,
+                runtimeMinutes,
+                isAdult,
+                releaseYear,
+                averageRating,
                 nid,
             ])
         conn.commit()
@@ -290,33 +353,63 @@ def del_movie(request):
     return redirect('/movie_manage/')
 
 def recommend(request):
-        conn = pymysql.connect( host='134.209.169.96',
-                                port=3306,
-                                user='MovieSystem',
-                                passwd='M0vie$ystem123',
-                                db='movie_system')
-        cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
-        cursor.execute("select * from recommend")
-        result = cursor.fetchall()
+
+        userId = request.GET.get('userId')
+        if userId:
+            conn = pymysql.connect( host='134.209.169.96',
+                                    port=3306,
+                                    user='MovieSystem',
+                                    passwd='M0vie$ystem123',
+                                    db='movie_system')
+            cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
+            cursor.execute("select movieId, rating from likelist where userId=%s", (userId))
+            results = cursor.fetchall()
+
+            fields = ["movie_id", "myRating"]
+            movies = []
+            for r in results:
+                movie = [value for key, value in r.items()]
+                movies.append(movie)
+            
+            if os.path.exists('result.csv'):
+                os.remove('result.csv')
+
+            if len(movies) >= 2:
+                f = open('result.csv', "w")
+                write = csv.writer(f)
+                write.writerow(fields)
+                write.writerows(movies)
+                f.close()
+
+                utils = rpackages.importr('utils')
+                packages = ('tidyverse', 'tidyr', 'cluster', 'dplyr', 'readxl', 'caret', 'readxl')
+                names_to_install = [x for x in packages if not rpackages.isinstalled(x)]
+                if len(packages) > 0:
+                    utils.install_packages(StrVector(names_to_install))
+                try:
+                    robjects.r.source("movie_recommend.R")
+                    res = robjects.r("res2")
+                    query = "SELECT * FROM movie WHERE movie_id IN {};".format(tuple(res[0]))
+                    cursor.execute(query)
+                    results = cursor.fetchall()
+
+                except Exception as e:
+                    print(e)
+                
+                cursor.close()
+                conn.close()
+                return render(request, 'recommend.html', {'result': results, 'user_id': userId})
+
+            else:
+                message = "Please pick at least 2 movies for recommendation!"
+                cursor.close()
+                conn.close()
+                return render(request, 'recommend.html', {'message': message, 'user_id': userId})
+
+        # return render(request, 'recommend.html', {'result': result})
         cursor.close()
         conn.close()
-        return render(request, 'recommend.html', {'result': result})
-
-def del_recommend(request):
-    nid = request.GET.get('nid')
-    conn = pymysql.connect(host='134.209.169.96',
-                                port=3306,
-                                user='MovieSystem',
-                                passwd='M0vie$ystem123',
-                                db='movie_system')
-    cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
-    cursor.execute("delete from recommend where movie_id=%s", [
-        nid,
-    ])
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return redirect('/recommend/')
+        return render(request, 'recommend.html', {'user_id': userId})
 
 def myrating(request):
     if request.method == "GET":
@@ -331,7 +424,6 @@ def myrating(request):
             nid,
         ])
         result = cursor.fetchone()
-        print(result)
         cursor.close()
         conn.close()
         return render(request, 'myrating.html', {'result': result})
@@ -341,8 +433,6 @@ def myrating(request):
         originalTitle = request.POST.get('originalTitle')
         averageRating = request.POST.get('averageRating')
         myRating = request.POST.get('myRating')
-        print(nid)
-        print(originalTitle)
         conn = pymysql.connect(host='134.209.169.96',
                                 port=3306,
                                 user='MovieSystem',
@@ -380,7 +470,6 @@ def user_manage(request):
 def search_user(request):
     if request.method == "POST":
         info = request.POST.get('info')
-        print(info)
         conn = pymysql.connect(host='134.209.169.96',
                             port=3306,
                             user='MovieSystem',
@@ -421,8 +510,9 @@ def del_user(request):
     return redirect('/user_manage/')
 
 def edit_user(request):
+    userId = request.GET.get('userId')
+
     if request.method == "GET":
-        userId = request.GET.get('userId')
         conn = pymysql.connect( host='134.209.169.96',
                                 port=3306,
                                 user='MovieSystem',
@@ -433,12 +523,10 @@ def edit_user(request):
             userId,
         ])
         result = cursor.fetchone()
-        print(result)
         cursor.close()
         conn.close()
         return render(request, 'edit_user.html', {'result': result})
     else:
-        userId = request.POST.get('userId')
         firstName = request.POST.get('firstName')
         lastName = request.POST.get('lastName')
         emailAddress = request.POST.get('emailAddress')
@@ -448,8 +536,6 @@ def edit_user(request):
             role = 1
         else:
             role = 2
-        print(roletype)
-        print(emailAddress)
         conn = pymysql.connect(host='134.209.169.96',
                                 port=3306,
                                 user='MovieSystem',
@@ -457,15 +543,15 @@ def edit_user(request):
                                 db='movie_system')
         cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
         cursor.execute(
-            "update user join password on user.userId=password.userId join user_role on user.userId=user_role.userId join role on user_role.roleId=role.roleId set user.firstName=%s,user.lastName=%s,user.emailAddress=%s,password.password=%s,user_role.roleId=%s where user.userId=%s", 
+            "update user join password on user.userId=password.userId set user.firstName=%s,user.lastName=%s,user.emailAddress=%s,password.password=%s where user.userId=%s;", 
             [
                 firstName,
                 lastName,
                 emailAddress,
                 password,
-                role,
                 userId,
             ])
+        cursor.execute("update user_role set roleId = %s where userId = %s;", (role, userId))
         conn.commit()
         cursor.close()
         conn.close()
@@ -475,7 +561,6 @@ def add_user(request):
     if request.method == "GET":
         return render(request, 'add_user.html')
     else:
-        print(request.POST)
         o = request.POST.get('userId')
         i = request.POST.get('firstName')
         p = request.POST.get('lastName')
@@ -505,8 +590,6 @@ def home(request):
         name_list.append(i.movie_id)
         data_list.append(i.averagerating)
         time_list.append(i.releaseyear)
-    print(name_list)
-    print(time_list)
     return JsonResponse({'name':name_list,'data_list': data_list,'time':time_list})  
 
 
@@ -534,7 +617,6 @@ def base(request):
     #     for i in list(res[0]):
     #         print("movieId: ", i)
     res_list = [1000361, 1001110, 1002299, 1002308, 1002317]
-    print(res_list[0])
     conn = pymysql.connect( host='134.209.169.96',
                                 port=3306,
                                 user='MovieSystem',

@@ -36,10 +36,11 @@ urlpatterns = [
     path('home/', views.home),
     path('echarts/', views.index),
     path('recommend/', views.recommend),
-    path('del_recommend/', views.del_recommend),
     path('del_movie/', views.del_movie),
     path('movie_detail/', views.movie_detail),
     path('myrating/', views.myrating),
     path('index/', views.index),
-    re_path(r'^$',views.index)
+    path('liked', views.movie_like),
+    path('unliked', views.movie_unlike),
+    re_path(r'^$',views.movie)
 ]
